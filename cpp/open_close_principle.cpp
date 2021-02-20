@@ -27,11 +27,6 @@ template <typename T>
 struct Specification
 {
     virtual bool is_satisfied(T* item) = 0;
-
-    //AndSpecification<T> operator&&(Specification &&other)
-    //{
-    //    return AndSpecification<T> (*this, other)
-    //}
 };
 
 // Interface to create filter
@@ -54,6 +49,12 @@ struct AndSpecification : Specification<T>
 	return first.is_satisfied(item) && second.is_satisfied(item);
     }
 };
+
+template <typename T> 
+AndSpecification<T> operator&& (Specification<T>& first, Specification<T>& second)
+{
+  return { first, second };
+}
 
 struct ProductFilter: Filter<Product>
 {
@@ -113,10 +114,16 @@ int main()
     	cout << r->name << endl;
     }
     AndSpecification<Product> rm(colorRed, sizeMedium);
+
+
     cout << "SIZE medium color Red\n";
     for (auto r : pf.filter(product, rm))
     {
     	cout << r->name << endl;
     }
+    cout << "SIZE medium color Red\n";
+    auto spec = colorRed && sizeMedium;
+    for (auto& x : pf.filter(product, spec))
+        cout << x->name << endl;
     return 0;
 }
