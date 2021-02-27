@@ -46,9 +46,10 @@ struct HtmlBuilder {
 	root.name = root_name;
     }
 
-    void add_child(string child_name, string child_text) {
+    HtmlBuilder& add_child(string child_name, string child_text) {
 	HtmlElement e{child_name, child_text};
 	root.elements.emplace_back(e);
+	return *this;
     }
 
     string str() const { return root.str(); }
